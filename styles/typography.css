@@ -1,0 +1,65 @@
+/* ============================================================
+   TYPOGRAPHY — the editorial type system.
+   Display scale, serif-italic emphasis, kickers, leads, numerals.
+   ============================================================ */
+
+.display, .display-2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 0.96;
+}
+.display   { font-size: clamp(2.1rem, 5.4vw, 4.75rem); line-height: 0.98; }
+.display-2 { font-size: clamp(1.7rem, 3.6vw, 2.9rem);  line-height: 1.02; }
+
+/* Italic emphasis with hand-drawn cyan underline */
+.em-serif {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-cyan-core);
+  letter-spacing: -0.005em;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 14' preserveAspectRatio='none'><path d='M 3 9 Q 30 3 60 7 T 120 6 T 197 8' stroke='%2322D3EE' stroke-width='2.4' fill='none' stroke-linecap='round' opacity='0.95'/></svg>");
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 100% 0.42em;
+  padding-bottom: 0.18em;
+}
+
+/* Same voice, no underline — for inline emphasis in body copy */
+.em-serif-sm {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  color: var(--color-cyan-core);
+}
+
+.kicker {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--color-mist);
+}
+
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  color: var(--color-cyan-core);
+}
+
+.lead {
+  font-family: var(--font-body);
+  font-size: clamp(0.98rem, 1.2vw, 1.12rem);
+  line-height: 1.55;
+  color: #C9CBC2;
+  max-width: 54ch;
+}
+
+.tnum {
+  font-feature-settings: 'tnum';
+  font-variant-numeric: tabular-nums;
+}

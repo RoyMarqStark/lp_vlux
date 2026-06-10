@@ -1,0 +1,63 @@
+/* ============================================================
+   THEME — design tokens. The single source of truth for color,
+   type families, tracking and container width.
+   Change a brand value here; nothing else in /styles hardcodes it.
+   ============================================================ */
+
+@theme {
+  /* Colors */
+  --color-ink: #0A0D08;
+  --color-panel: #0F120D;
+  --color-elevated: #141812;
+  --color-hairline: rgba(255, 255, 255, 0.06);
+  --color-pearl: #F5F5F0;
+  --color-mist: #9EA197;
+  --color-ash: #6B6E63;
+
+  --color-cyan-core: #22D3EE;
+  --color-cyan-soft: #67E8F9;
+  --color-cyan-deep: #0891B2;
+  --color-cyan-dim: rgba(34, 211, 238, 0.12);
+
+  --color-success: #34D399;
+  --color-warn: #FBBF24;
+  --color-risk: #F87171;
+
+  /* shadcn-compatible aliases — keep components from the ecosystem working
+     without rewriting their `bg-background` / `text-foreground` utilities */
+  --color-foreground: #F5F5F0;
+  --color-background: #0A0D08;
+  --color-primary: #22D3EE;
+  --color-secondary: #67E8F9;
+  --color-muted-foreground: #9EA197;
+  --color-destructive: #F87171;
+  --color-border: rgba(255, 255, 255, 0.06);
+
+  /* Fonts — wired to next/font CSS vars set on <html> in layout.tsx */
+  --font-display: var(--font-switzer), system-ui, sans-serif;
+  --font-body: var(--font-inter), system-ui, sans-serif;
+  --font-serif: var(--font-instrument), Georgia, serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+
+  /* Tracking */
+  --tracking-tightest: -0.045em;
+  --tracking-tighter: -0.025em;
+  --tracking-kicker: 0.18em;
+
+  /* Container */
+  --container-shell: 1260px;
+}
+
+:root {
+  color-scheme: dark;
+
+  /* Raw aliases for components that read var(--foreground) directly
+     (not via Tailwind utilities). Mirror the @theme entries. */
+  --foreground: #F5F5F0;
+  --background: #0A0D08;
+  --primary: #22D3EE;
+  --secondary: #67E8F9;
+  --muted-foreground: #9EA197;
+  --destructive: #F87171;
+  --border: rgba(255, 255, 255, 0.06);
+}
