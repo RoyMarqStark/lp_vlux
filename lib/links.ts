@@ -15,6 +15,11 @@ export const PHONE_DISPLAY = '+52 744 145 2048';
 
 export const EMAIL = 'vluxmarketing@gmail.com';
 
+export const LEGAL_NAME = 'VLUX S.A.S.';
+export const LEGAL_ADDRESS =
+  'Calle Ixtapantongo Número Exterior 111, Colonia Valle Don Camilo, Municipio de Toluca, Estado de México';
+export const PRIVACY_UPDATED = '17 de junio de 2026';
+
 export const NAV_LINKS = [
   { num: '[02]', label: 'Problema', href: '#problema' },
   { num: '[03]', label: 'Promesa', href: '#promesa' },

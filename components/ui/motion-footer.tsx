@@ -384,7 +384,7 @@ export function CinematicFooter() {
                 </MagneticButton>
                 <MagneticButton
                   as="a"
-                  href="#"
+                  href="/aviso-de-privacidad"
                   className="footer-glass-pill px-6 py-3 rounded-full text-muted-foreground font-medium text-xs md:text-sm hover:text-foreground"
                 >
                   Aviso de privacidad
