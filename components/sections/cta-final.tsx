@@ -48,7 +48,7 @@ export function CtaFinal() {
       </div>
 
       <div className="relative max-w-[var(--container-shell)] mx-auto px-5 lg:px-8">
-        <SectionKicker num="[07]" label="Contacto · Diagnóstico operativo" />
+        <SectionKicker num="[06]" label="Contacto · Diagnóstico operativo" />
 
         <div className="mt-10 lg:mt-14 grid lg:grid-cols-12 gap-8 lg:gap-16">
 

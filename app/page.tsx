@@ -19,7 +19,6 @@ import { Manifesto } from '@/components/sections/manifesto';
 import { ModulesShowcase } from '@/components/sections/modules-showcase';
 import { LiveOpsTheater } from '@/components/sections/live-ops-theater';
 import { IntegrationsMarquee } from '@/components/sections/integrations-marquee';
-import { ProcessTimeline } from '@/components/sections/process-timeline';
 import { CtaFinal } from '@/components/sections/cta-final';
 
 import { CALENDAR_URL } from '@/lib/links';
@@ -35,8 +34,7 @@ const delay = (ms: number): CSSProperties => ({ ['--delay' as never]: `${ms}ms` 
  *   [03] Promesa         — editorial manifesto, word-by-word reveal on scroll
  *   [04] Módulos         — asymmetric bento grid with 3D magnetic hover
  *   [05] Integraciones   — infinite marquee of partner tools
- *   [06] Proceso         — vertical timeline with scroll-bound progress fill
- *   [07] Diagnóstico     — magnetic CTA with dramatic halo
+ *   [06] Diagnóstico     — magnetic CTA with dramatic halo
  *   Footer               — editorial sitemap + direct contact
  */
 export default function HomePage() {
@@ -51,7 +49,6 @@ export default function HomePage() {
       <ModulesShowcase />
       <LiveOpsTheater />
       <IntegrationsMarquee />
-      <ProcessTimeline />
       <CtaFinal />
       <CinematicFooter />
 

@@ -25,6 +25,5 @@ export const NAV_LINKS = [
   { num: '[03]', label: 'Promesa', href: '#promesa' },
   { num: '[04]', label: 'Módulos', href: '#modulos' },
   { num: '[05]', label: 'Integraciones', href: '#integraciones' },
-  { num: '[06]', label: 'Proceso', href: '#proceso' },
-  { num: '[07]', label: 'Contacto', href: '#contacto' },
+  { num: '[06]', label: 'Contacto', href: '#contacto' },
 ] as const;
