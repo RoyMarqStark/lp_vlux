@@ -322,3 +322,13 @@
   opacity: 0.6;
   cursor: not-allowed;
 }
+
+/* ---------- Touch targets (WCAG AA — 48px minimum) ---------- */
+@media (max-width: 640px) {
+  .btn-cta,
+  .btn-cta-primary,
+  .btn-ghost {
+    padding: 0.95rem 1.5rem;
+    min-height: 48px;
+  }
+}

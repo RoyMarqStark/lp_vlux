@@ -173,7 +173,7 @@ export function LiveOpsTheater() {
           </div>
 
           {/* Body */}
-          <div className="grid lg:grid-cols-12 min-h-[480px]">
+          <div className="grid lg:grid-cols-12 lg:min-h-[480px]">
 
             {/* ===== LEFT — Live event feed ===== */}
             <div className="lg:col-span-5 border-b lg:border-b-0 lg:border-r border-white/[0.05] p-5 lg:p-6 flex flex-col">

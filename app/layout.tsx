@@ -57,6 +57,7 @@ export const viewport: Viewport = {
   themeColor: '#0A0D08',
   width: 'device-width',
   initialScale: 1,
+  viewportFit: 'cover',
 };
 
 /* ---------- Root layout ---------- */

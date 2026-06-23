@@ -100,7 +100,7 @@ export function ModulesShowcase() {
           </p>
         </div>
 
-        <div className="mt-14 lg:mt-20 grid lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+        <div className="mt-14 lg:mt-20 grid lg:grid-cols-12 gap-6 lg:gap-14 items-start">
 
           {/* ===== LEFT — editorial index rows ===== */}
           <div className="lg:col-span-6 reveal" style={{ ['--delay' as never]: '240ms' }}>
@@ -143,7 +143,7 @@ export function ModulesShowcase() {
                         transition={{ duration: 0.45, ease: [0.22, 0.61, 0.36, 1] }}
                         className="overflow-hidden"
                       >
-                        <div className="pl-10 lg:pl-12 pt-4 pr-4">
+                        <div className="pl-5 lg:pl-12 pt-4 pr-4">
                           <p className="text-mist text-[0.95rem] leading-relaxed max-w-lg">
                             {mod.trigger}
                           </p>

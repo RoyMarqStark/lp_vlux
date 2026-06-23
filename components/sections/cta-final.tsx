@@ -40,7 +40,7 @@ const REVIEW_CARDS: DisplayCardProps[] = [
  */
 export function CtaFinal() {
   return (
-    <section id="contacto" className="relative py-28 lg:py-40 border-t border-white/[0.05] overflow-hidden">
+    <section id="contacto" className="relative py-16 lg:py-40 border-t border-white/[0.05] overflow-hidden">
       {/* Big radial halo */}
       <div className="absolute inset-0 pointer-events-none" aria-hidden="true">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1100px] h-[600px] bg-cyan-core/[0.10] blur-3xl rounded-full" />
@@ -50,7 +50,7 @@ export function CtaFinal() {
       <div className="relative max-w-[var(--container-shell)] mx-auto px-5 lg:px-8">
         <SectionKicker num="[07]" label="Contacto · Diagnóstico operativo" />
 
-        <div className="mt-10 lg:mt-14 grid lg:grid-cols-12 gap-12 lg:gap-16">
+        <div className="mt-10 lg:mt-14 grid lg:grid-cols-12 gap-8 lg:gap-16">
 
           <div className="lg:col-span-7">
             <h2 className="display-2 reveal" style={{ ['--delay' as never]: '80ms' }}>
@@ -94,7 +94,7 @@ export function CtaFinal() {
             <div className="reveal" style={{ ['--delay' as never]: '200ms' }}>
               <div className="kicker mb-10">Qué revisamos juntos</div>
               {/* Skewed stack needs breathing room for hover fan-out */}
-              <div className="pt-4 pb-24 pr-6 overflow-visible">
+              <div className="pt-4 pb-8 pr-2 sm:pb-24 sm:pr-6 overflow-hidden sm:overflow-visible">
                 <DisplayCards cards={REVIEW_CARDS} />
               </div>
             </div>

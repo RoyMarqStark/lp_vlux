@@ -68,7 +68,7 @@ export default function HomePage() {
    ================================================================== */
 function Hero() {
   return (
-    <section id="inicio" className="relative pt-12 lg:pt-16 overflow-hidden">
+    <section id="inicio" className="relative pt-20 lg:pt-16 overflow-hidden">
       {/* WebGL neural-noise background — scoped to this section, brand cyan, subtle */}
       <div className="absolute inset-0 z-0" aria-hidden="true">
         <NeuralNoise />
