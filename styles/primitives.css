@@ -141,6 +141,7 @@
 .pill-cyan  { background: rgba(34, 211, 238, 0.10); color: var(--color-cyan-soft); border: 1px solid rgba(34, 211, 238, 0.25); }
 .pill-green { background: rgba(52, 211, 153, 0.08); color: #6EE7B7;                  border: 1px solid rgba(52, 211, 153, 0.22); }
 .pill-warn  { background: rgba(251, 191, 36, 0.10); color: #FCD34D;                  border: 1px solid rgba(251, 191, 36, 0.22); }
+.pill-risk  { background: rgba(248, 113, 113, 0.10); color: #FCA5A5;                 border: 1px solid rgba(248, 113, 113, 0.24); }
 .pill-muted { background: rgba(255, 255, 255, 0.04); color: #C9CBC2;                 border: 1px solid rgba(255, 255, 255, 0.08); }
 
 /* ---------- Animated Generate Button (sparkle CTA) ----------

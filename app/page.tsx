@@ -14,7 +14,7 @@ import { AnimatedGenerateButton } from '@/components/ui/animated-generate-button
 import { DashboardMockup } from '@/components/dashboard-mockup';
 
 // Sections — each one is its own cinematic moment
-import { ProblemSticky } from '@/components/sections/problem-sticky';
+import { ProblemDiagnostic } from '@/components/sections/problem-diagnostic';
 import { Manifesto } from '@/components/sections/manifesto';
 import { ModulesShowcase } from '@/components/sections/modules-showcase';
 import { LiveOpsTheater } from '@/components/sections/live-ops-theater';
@@ -31,7 +31,7 @@ const delay = (ms: number): CSSProperties => ({ ['--delay' as never]: `${ms}ms` 
  *
  * Narrative flow:
  *   [01] Hero            — WebGL neural noise + scroll-driven dashboard reveal
- *   [02] Problema        — sticky scroll narrative, pinned title + revealing pains
+ *   [02] Problema        — live operations monitor: failing vital-signs + cost meters
  *   [03] Promesa         — editorial manifesto, word-by-word reveal on scroll
  *   [04] Módulos         — asymmetric bento grid with 3D magnetic hover
  *   [05] Integraciones   — infinite marquee of partner tools
@@ -46,7 +46,7 @@ export default function HomePage() {
       <ContactRail />
 
       <Hero />
-      <ProblemSticky />
+      <ProblemDiagnostic />
       <Manifesto />
       <ModulesShowcase />
       <LiveOpsTheater />

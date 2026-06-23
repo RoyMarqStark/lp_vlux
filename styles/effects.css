@@ -42,6 +42,39 @@
   transform: translateY(0);
 }
 
+/* ---------- Section [02] diagnostic monitor ---------- */
+@keyframes diag-wave {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+.diag-wave-track {
+  display: flex;
+  width: 200%;
+  animation: diag-wave 7s linear infinite;
+}
+.diag-wave-track > svg {
+  width: 50%;
+  flex: none;
+}
+
+@keyframes diag-scan {
+  0%   { background-position: 50% -60%; opacity: 0; }
+  12%  { opacity: 1; }
+  88%  { opacity: 1; }
+  100% { background-position: 50% 160%; opacity: 0; }
+}
+.diag-scan {
+  background-image: linear-gradient(
+    to bottom,
+    transparent 46%,
+    rgba(34, 211, 238, 0.55) 50%,
+    transparent 54%
+  );
+  background-size: 100% 220%;
+  background-repeat: no-repeat;
+  animation: diag-scan 4.8s ease-in-out infinite;
+}
+
 /* ---------- Ambient halo (hero) ---------- */
 .halo-left {
   position: absolute;
@@ -66,4 +99,7 @@
   .animate-footer-breathe,
   .animate-footer-scroll-marquee,
   .animate-footer-heartbeat { animation: none !important; }
+  /* Section [02] diagnostic monitor */
+  .diag-wave-track { animation: none !important; }
+  .diag-scan { animation: none !important; display: none; }
 }

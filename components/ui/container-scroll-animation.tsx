@@ -64,7 +64,10 @@ export function ContainerScroll({ titleComponent, children }: ContainerScrollPro
   // If reduced motion is on, lock the values to their final state (flat card).
   const rotate = useTransform(scrollYProgress, [0, 1], prefersReduced ? [0, 0] : [20, 0]);
   const scale = useTransform(scrollYProgress, [0, 1], prefersReduced ? [1, 1] : scaleRange);
-  const translate = useTransform(scrollYProgress, [0, 1], prefersReduced ? [0, 0] : [0, -100]);
+  // On mobile, the upward title parallax slides the H1 under the fixed header
+  // capsule (top-left). Disable it there so the title clears the menu at all
+  // scroll positions; keep the flourish on desktop.
+  const translate = useTransform(scrollYProgress, [0, 1], prefersReduced || isMobile ? [0, 0] : [0, -100]);
 
   return (
     <div
