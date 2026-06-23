@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef, type ReactNode } from 'react';
-import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from 'framer-motion';
 import { SectionKicker } from '@/components/ui/section-kicker';
 
 /**
@@ -59,12 +59,16 @@ interface ManifestoLineProps {
 }
 
 function ManifestoLine({ children, progress, range }: ManifestoLineProps) {
-  const opacity = useTransform(progress, range, [0.12, 1]);
-  const y = useTransform(progress, range, [40, 0]);
+  const reduced = useReducedMotion();
+  const opacityAnim = useTransform(progress, range, [0.12, 1]);
+  const yAnim = useTransform(progress, range, [40, 0]);
 
   return (
     <motion.div
-      style={{ opacity, y }}
+      style={{
+        opacity: reduced ? 1 : opacityAnim,
+        y: reduced ? 0 : yAnim,
+      }}
       className="font-display font-bold tracking-[var(--tracking-tightest)] leading-[0.96] text-[2.4rem] md:text-[4.2rem] lg:text-[5.6rem]"
     >
       {children}

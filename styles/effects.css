@@ -61,4 +61,9 @@
   .live-dot::after { animation: none; }
   .btn-cta .arrow { transition: none; }
   html { scroll-behavior: auto; }
+  /* Footer CSS animations — must be here since they live in a <style> tag
+     that cannot reach this file; the classes are global so this rule wins. */
+  .animate-footer-breathe,
+  .animate-footer-scroll-marquee,
+  .animate-footer-heartbeat { animation: none !important; }
 }

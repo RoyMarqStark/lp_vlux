@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from 'framer-motion';
 import { SectionKicker } from '@/components/ui/section-kicker';
 import { BackgroundPaths } from '@/components/ui/background-paths';
 
@@ -48,6 +48,7 @@ const STEPS: readonly Step[] = [
  */
 export function ProcessTimeline() {
   const ref = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start 80%', 'end 20%'],
@@ -57,8 +58,8 @@ export function ProcessTimeline() {
 
   return (
     <section id="proceso" ref={ref} className="relative py-24 lg:py-32 border-t border-white/[0.05] overflow-hidden">
-      {/* Flowing cyan stroke field — animates only while the section is in view */}
-      <BackgroundPaths className="z-0 opacity-80" />
+      {/* Flowing cyan stroke field — reduced opacity to avoid visual saturation */}
+      <BackgroundPaths className="z-0 opacity-30" />
 
       <div className="relative z-10 max-w-[var(--container-shell)] mx-auto px-5 lg:px-8">
         <SectionKicker num="[06]" label="El Proceso · Cómo trabajamos" />
@@ -80,7 +81,7 @@ export function ProcessTimeline() {
 
           {/* Vertical progress line — fills cyan as you scroll */}
           <motion.div
-            style={{ scaleY: lineScaleY, transformOrigin: 'top' }}
+            style={{ scaleY: reduced ? 1 : lineScaleY, transformOrigin: 'top' }}
             className="absolute left-[27px] lg:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-cyan-core via-cyan-core to-cyan-core/30 lg:-translate-x-1/2"
           />
 
@@ -107,6 +108,8 @@ interface TimelineStepProps {
 }
 
 function TimelineStep({ index, total, step, progress }: TimelineStepProps) {
+  const reduced = useReducedMotion();
+
   // Numerically stable boundary at 1.0 (avoids 0.9999... floating-point drift)
   const start = index / total;
   const slice = 1 / total;
@@ -137,18 +140,18 @@ function TimelineStep({ index, total, step, progress }: TimelineStepProps) {
     <div className="relative mb-16 lg:mb-24 last:mb-0 grid lg:grid-cols-2 gap-6 lg:gap-16 items-center pl-16 lg:pl-0">
       {/* Node — absolute on the line */}
       <motion.div
-        style={{ scale: nodeScale }}
+        style={{ scale: reduced ? 1 : nodeScale }}
         className="absolute left-[27px] lg:left-1/2 top-0 lg:top-1/2 -translate-x-1/2 lg:-translate-y-1/2 z-10"
       >
         <motion.div
           style={{
-            backgroundColor: nodeBg,
-            borderColor: nodeBorderColor,
+            backgroundColor: reduced ? '#22D3EE' : nodeBg,
+            borderColor: reduced ? 'rgba(34,211,238,1)' : nodeBorderColor,
           }}
           className="w-14 h-14 lg:w-16 lg:h-16 rounded-full border-2 flex items-center justify-center"
         >
           <motion.span
-            style={{ color: nodeNumColor }}
+            style={{ color: reduced ? '#0A0D08' : nodeNumColor }}
             className="font-display tnum text-[0.85rem] lg:text-[0.95rem] font-bold tracking-[0.05em]"
           >
             {step.num}
@@ -158,7 +161,7 @@ function TimelineStep({ index, total, step, progress }: TimelineStepProps) {
 
       {/* Card */}
       <motion.div
-        style={{ opacity: cardOpacity }}
+        style={{ opacity: reduced ? 1 : cardOpacity }}
         className={`panel p-6 lg:p-8 ${isLeft ? 'lg:col-start-1' : 'lg:col-start-2'}`}
       >
         <div className="kicker mb-3">{step.meta}</div>

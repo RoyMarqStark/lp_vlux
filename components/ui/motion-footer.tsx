@@ -145,6 +145,7 @@ function MagneticButton({
     const el = ref.current;
     if (!el) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (window.matchMedia('(hover: none)').matches) return;
 
     const handleMove = (e: MouseEvent) => {
       const rect = el.getBoundingClientRect();
@@ -227,6 +228,14 @@ export function CinematicFooter() {
   useEffect(() => {
     if (typeof window === 'undefined') return;
     if (!wrapperRef.current) return;
+
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isMobile = window.matchMedia('(max-width: 767px)').matches;
+
+    // On mobile or reduced motion: skip GSAP entirely so elements stay visible
+    // at their natural CSS state (opacity 1, y 0) rather than stuck at initial
+    // animated values (opacity 0, y 50).
+    if (prefersReduced || isMobile) return;
 
     const ctx = gsap.context(() => {
       // Background giant-text parallax

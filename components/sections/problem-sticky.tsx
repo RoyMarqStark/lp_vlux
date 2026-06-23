@@ -1,7 +1,7 @@
 'use client';
 
 import { useRef } from 'react';
-import { motion, useScroll, useTransform, type MotionValue } from 'framer-motion';
+import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from 'framer-motion';
 import { SectionKicker } from '@/components/ui/section-kicker';
 
 interface Pain {
@@ -33,21 +33,65 @@ const PAINS: readonly Pain[] = [
  * Left column (title + lead + progress dots) pins to viewport.
  * Right column shows one pain at a time, fading in/out as you scroll.
  *
- * Section height = 320vh so each pain occupies ~1 viewport of scroll.
+ * Section height scales with viewport: 200vh mobile → 320vh desktop.
+ * When prefers-reduced-motion: renders as a static 3-column grid instead.
  */
 export function ProblemSticky() {
   const ref = useRef<HTMLDivElement>(null);
+  const reduced = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: ref,
     offset: ['start start', 'end end'],
   });
 
+  // ── Reduced-motion: static grid, no scroll tricks ──────────────────────
+  if (reduced) {
+    return (
+      <section
+        id="problema"
+        className="relative border-t border-white/[0.05] py-24 lg:py-32"
+      >
+        <div className="max-w-[var(--container-shell)] mx-auto px-5 lg:px-8">
+          <SectionKicker num="[02]" label="El Problema · Por qué duele" />
+          <h2 className="display-2 mt-6 mb-4">
+            La operación crece,<br />
+            pero las herramientas<br />
+            <span className="em-serif">se quedan cortas</span>.
+          </h2>
+          <p className="lead mb-12">
+            Los archivos, chats y reportes que sostuvieron el crecimiento empiezan a generar errores, retrabajos y decisiones tarde.
+          </p>
+          <div className="grid lg:grid-cols-3 gap-6">
+            {PAINS.map((pain, i) => (
+              <article key={pain.title} className="panel p-8 flex flex-col">
+                <div className="icon-box mb-7">
+                  <PainIcon index={i} />
+                </div>
+                <h3 className="font-display text-[1.5rem] font-bold tracking-[var(--tracking-tightest)] leading-[1.05]">
+                  {pain.title}
+                </h3>
+                <p className="text-mist mt-5 leading-relaxed text-[1rem]">{pain.body}</p>
+                <div className="mt-auto pt-7 flex items-center gap-2.5 text-[0.85rem] text-ash border-t border-white/[0.06]">
+                  <svg className="w-4 h-4 text-warn flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M12 8v4M12 16h.01" />
+                  </svg>
+                  <span><span className="text-mist">Cuesta:</span> {pain.cost}</span>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  // ── Normal: scroll-driven sticky narrative ──────────────────────────────
   return (
     <section
       id="problema"
       ref={ref}
-      className="relative border-t border-white/[0.05]"
-      style={{ height: '320vh' }}
+      className="relative border-t border-white/[0.05] h-[200vh] md:h-[260vh] lg:h-[320vh]"
     >
       <div className="sticky top-0 h-screen flex items-center overflow-hidden">
         <div className="max-w-[var(--container-shell)] mx-auto px-5 lg:px-8 w-full grid lg:grid-cols-12 gap-10 lg:gap-16">

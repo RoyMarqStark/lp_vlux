@@ -110,7 +110,7 @@ export function LiveOpsTheater() {
         if (visible) start();
         else stop();
       },
-      { threshold: 0.2 },
+      { threshold: 0.3 },
     );
     io.observe(el);
 
@@ -194,7 +194,7 @@ export function LiveOpsTheater() {
                       initial={{ opacity: 0, x: -18, scale: 0.97 }}
                       animate={{ opacity: 1, x: 0, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 28 }}
+                      transition={{ type: 'spring', stiffness: 180, damping: 26 }}
                       className="rounded-lg border border-white/[0.06] bg-white/[0.015] px-3.5 py-3"
                     >
                       <div className="flex items-start gap-3">
@@ -347,7 +347,7 @@ function AnimatedNumber({ value, suffix = '', className }: { value: number; suff
           initial={{ y: 12, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           exit={{ y: -12, opacity: 0 }}
-          transition={{ type: 'spring', stiffness: 300, damping: 26 }}
+          transition={{ type: 'spring', stiffness: 180, damping: 24 }}
           className="inline-block"
         >
           {value}{suffix}

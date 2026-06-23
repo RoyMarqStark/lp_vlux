@@ -1,6 +1,6 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
 import { SectionKicker } from '@/components/ui/section-kicker';
 
 const ITEMS = [
@@ -16,10 +16,12 @@ const ITEMS = [
 
 /**
  * Infinite-scrolling marquee of integration names.
- * Premium B2B convention — feels alive without being noisy.
- * Gradients on the edges fade items into the dark background.
+ * Pauses when prefers-reduced-motion is active.
+ * Font size scales down on mobile to avoid visual overload.
  */
 export function IntegrationsMarquee() {
+  const reduced = useReducedMotion();
+
   return (
     <section
       id="integraciones"
@@ -35,22 +37,26 @@ export function IntegrationsMarquee() {
 
       <div className="relative">
         {/* Edge gradients */}
-        <div className="absolute inset-y-0 left-0 w-32 lg:w-56 z-10 bg-gradient-to-r from-ink via-ink/90 to-transparent pointer-events-none" />
-        <div className="absolute inset-y-0 right-0 w-32 lg:w-56 z-10 bg-gradient-to-l from-ink via-ink/90 to-transparent pointer-events-none" />
+        <div className="absolute inset-y-0 left-0 w-24 lg:w-56 z-10 bg-gradient-to-r from-ink via-ink/90 to-transparent pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-24 lg:w-56 z-10 bg-gradient-to-l from-ink via-ink/90 to-transparent pointer-events-none" />
 
         {/* Marquee track */}
         <div className="overflow-hidden">
           <motion.div
-            className="flex gap-12 lg:gap-20 whitespace-nowrap"
-            animate={{ x: ['0%', '-50%'] }}
-            transition={{ duration: 42, ease: 'linear', repeat: Infinity }}
+            className="flex gap-8 md:gap-14 lg:gap-20 whitespace-nowrap"
+            {...(!reduced
+              ? {
+                  animate: { x: ['0%', '-50%'] },
+                  transition: { duration: 60, ease: 'linear', repeat: Infinity },
+                }
+              : {})}
           >
             {[...ITEMS, ...ITEMS].map((item, i) => (
-              <div key={`${item}-${i}`} className="flex items-center gap-12 lg:gap-20 shrink-0">
-                <span className="font-display text-[2.5rem] md:text-[3.5rem] lg:text-[4.5rem] font-bold text-pearl tracking-[var(--tracking-tightest)] leading-none">
+              <div key={`${item}-${i}`} className="flex items-center gap-8 md:gap-14 lg:gap-20 shrink-0">
+                <span className="font-display text-[1.7rem] md:text-[3rem] lg:text-[4.5rem] font-bold text-pearl tracking-[var(--tracking-tightest)] leading-none">
                   {item}
                 </span>
-                <span className="w-2 h-2 rounded-full bg-cyan-core/60 shrink-0" />
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-core/50 shrink-0" />
               </div>
             ))}
           </motion.div>
