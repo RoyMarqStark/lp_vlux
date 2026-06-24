@@ -59,20 +59,19 @@ export function ContainerScroll({ titleComponent, children }: ContainerScrollPro
     };
   }, []);
 
-  const scaleRange: [number, number] = isMobile ? [0.7, 0.9] : [1.05, 1];
-
-  // If reduced motion is on, lock the values to their final state (flat card).
-  const rotate = useTransform(scrollYProgress, [0, 1], prefersReduced ? [0, 0] : [20, 0]);
-  const scale = useTransform(scrollYProgress, [0, 1], prefersReduced ? [1, 1] : scaleRange);
-  // On mobile, the upward title parallax slides the H1 under the fixed header
-  // capsule (top-left). Disable it there so the title clears the menu at all
-  // scroll positions; keep the flourish on desktop.
-  const translate = useTransform(scrollYProgress, [0, 1], prefersReduced || isMobile ? [0, 0] : [0, -100]);
+  // On mobile (and reduced-motion) we drop the 3D scroll choreography entirely:
+  // the fixed-height tilt/scale clipped the dashboard and the upward title
+  // parallax slid the H1 under the fixed header. Render flat + full-size so the
+  // dashboard shows in full. Desktop keeps the cinematic reveal.
+  const flat = prefersReduced || isMobile;
+  const rotate = useTransform(scrollYProgress, [0, 1], flat ? [0, 0] : [20, 0]);
+  const scale = useTransform(scrollYProgress, [0, 1], flat ? [1, 1] : [1.05, 1]);
+  const translate = useTransform(scrollYProgress, [0, 1], flat ? [0, 0] : [0, -100]);
 
   return (
     <div
       ref={containerRef}
-      className="relative flex h-[40rem] sm:h-[50rem] md:h-[72rem] items-start justify-center p-2 md:px-20 md:pt-8 md:pb-20"
+      className="relative flex h-auto md:h-[72rem] items-start justify-center p-2 md:px-20 md:pt-8 md:pb-20"
     >
       <div className="relative w-full pt-2 pb-6 md:pt-4 md:pb-12" style={{ perspective: '1000px' }}>
         <Header translate={translate} titleComponent={titleComponent} />
@@ -115,7 +114,7 @@ function Card({ rotate, scale, children }: CardProps) {
           '0 120px 160px -60px rgba(34,211,238,0.06)',
         ].join(', '),
       }}
-      className="mx-auto mt-8 md:mt-20 h-[22rem] sm:h-[26rem] w-full max-w-5xl rounded-2xl border border-white/[0.08] bg-elevated p-2 md:h-[40rem] md:p-3"
+      className="mx-auto mt-8 md:mt-20 h-auto w-full max-w-5xl rounded-2xl border border-white/[0.08] bg-elevated p-2 md:h-[40rem] md:p-3"
     >
       <div className="h-full w-full overflow-hidden rounded-xl bg-panel">
         {children}

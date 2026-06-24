@@ -64,13 +64,13 @@ export function DashboardMockup() {
               { id: 'OP-2419 · Refacciones', meta: 'Mario A. · 00h 42m', status: 'Listo', kind: 'green' as const },
               { id: 'OP-2420 · Distribuidora', meta: 'Sofía E. · 04h 03m', status: 'Atención', kind: 'warn' as const },
             ].map((row) => (
-              <div key={row.id} className="mockup-row grid grid-cols-12 items-center px-3 py-2.5 transition-colors">
-                <div className="col-span-7">
-                  <div className="text-[0.78rem] font-display font-medium">{row.id}</div>
-                  <div className="text-[0.64rem] text-ash">{row.meta}</div>
+              <div key={row.id} className="mockup-row grid grid-cols-12 items-center gap-2 px-3 py-2.5 transition-colors">
+                <div className="col-span-7 min-w-0">
+                  <div className="text-[0.78rem] font-display font-medium truncate">{row.id}</div>
+                  <div className="text-[0.64rem] text-ash truncate">{row.meta}</div>
                 </div>
-                <div className="col-span-5 text-right">
-                  <span className={`pill pill-${row.kind}`}>{row.status}</span>
+                <div className="col-span-5 flex justify-end">
+                  <span className={`pill pill-${row.kind} shrink-0`}>{row.status}</span>
                 </div>
               </div>
             ))}
