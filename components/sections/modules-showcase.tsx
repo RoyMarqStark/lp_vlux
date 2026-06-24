@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { AnimatePresence, motion, useInView, useReducedMotion } from 'framer-motion';
 import { FileSpreadsheet, MessageCircle, CheckCircle2 } from 'lucide-react';
 import { SectionKicker } from '@/components/ui/section-kicker';
+import { MODULES } from '@/content/modules';
 
 /* ============================================================
    MODULES SHOWCASE — "índice vivo".
@@ -12,53 +13,10 @@ import { SectionKicker } from '@/components/ui/section-kicker';
    Excel chaos collapsing into a system · a WhatsApp message
    becoming an assigned ticket · a dashboard drawing itself.
    Auto-advances like stories; hover/click switches instantly.
+   (Copy & module data live in content/modules.ts)
    ============================================================ */
 
 const AUTO_SECONDS = 6;
-
-interface Mod {
-  id: string;
-  pre: string;
-  em: string;
-  url: string;
-  trigger: string;
-  deliver: string[];
-  result: string;
-  resultEm: string;
-}
-
-const MODS: readonly Mod[] = [
-  {
-    id: 'excel',
-    pre: 'Excel a ',
-    em: 'sistema operativo',
-    url: 'vlux.app/inventario',
-    trigger: 'Cuando una hoja ya controla inventario, costos, pedidos o asistencia y crece más rápido que las fórmulas.',
-    deliver: ['App por roles', 'Historial y permisos', 'Base centralizada'],
-    result: 'Una sola versión de la verdad,',
-    resultEm: 'sin perseguir archivos',
-  },
-  {
-    id: 'whatsapp',
-    pre: 'WhatsApp ',
-    em: 'con seguimiento',
-    url: 'vlux.app/pedidos',
-    trigger: 'Cuando los pedidos, solicitudes o tickets entran por chat y el seguimiento depende de quién recuerde.',
-    deliver: ['Captura estructurada', 'Asignación automática', 'Alertas en panel'],
-    result: 'Cero conversaciones perdidas,',
-    resultEm: 'cada solicitud con dueño',
-  },
-  {
-    id: 'reportes',
-    pre: 'Reportes y ',
-    em: 'tableros claros',
-    url: 'vlux.app/tableros',
-    trigger: 'Cuando dirección toma decisiones con datos de hace una semana o no comparables entre áreas.',
-    deliver: ['Tableros en vivo', 'KPIs por rol', 'Exportes programados'],
-    result: 'Decisiones con datos de hoy,',
-    resultEm: 'no de la semana pasada',
-  },
-] as const;
 
 export function ModulesShowcase() {
   const sectionRef = useRef<HTMLElement | null>(null);
@@ -75,7 +33,7 @@ export function ModulesShowcase() {
   };
 
   const advance = () => {
-    setActive((a) => (a + 1) % MODS.length);
+    setActive((a) => (a + 1) % MODULES.length);
     setCycle((c) => c + 1);
   };
 
@@ -104,7 +62,7 @@ export function ModulesShowcase() {
 
           {/* ===== LEFT — editorial index rows ===== */}
           <div className="lg:col-span-6 reveal" style={{ ['--delay' as never]: '240ms' }}>
-            {MODS.map((mod, i) => {
+            {MODULES.map((mod, i) => {
               const isActive = i === active;
               return (
                 <button
@@ -190,14 +148,14 @@ export function ModulesShowcase() {
                 </div>
                 <AnimatePresence mode="wait">
                   <motion.div
-                    key={MODS[active].url}
+                    key={MODULES[active].url}
                     initial={{ opacity: 0, y: -6 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 6 }}
                     transition={{ duration: 0.25 }}
                     className="flex items-center gap-1.5 text-[0.68rem] font-mono text-ash"
                   >
-                    {MODS[active].url}
+                    {MODULES[active].url}
                   </motion.div>
                 </AnimatePresence>
                 <div className="flex items-center gap-1.5 text-[0.65rem] text-mist">

@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { animate, useInView, useReducedMotion } from 'framer-motion';
 import { SectionKicker } from '@/components/ui/section-kicker';
+import { FRACTURES, type Fracture } from '@/content/problem';
 
 /* ============================================================
    [02] PROBLEMA — "Diagnóstico operativo en vivo"
@@ -15,58 +16,6 @@ import { SectionKicker } from '@/components/ui/section-kicker';
    natural document flow (no pinning, no scroll-jacking), so it
    is light on mobile and freezes cleanly under reduced-motion.
    ============================================================ */
-
-interface Fracture {
-  tool: string;
-  system: string;
-  problem: string;
-  /** Numeric part of the cost metric, count-up on view. */
-  value: number;
-  prefix: string;
-  suffix: string;
-  caption: string;
-  status: 'CRÍTICO' | 'EN RIESGO';
-  severity: 'risk' | 'warn';
-}
-
-const FRACTURES: readonly Fracture[] = [
-  {
-    tool: 'Excel',
-    system: 'Integridad de datos',
-    problem:
-      'Cada área edita su propia copia. Las fórmulas se rompen, los enlaces externos fallan y nadie sabe cuál es la hoja correcta.',
-    value: 14,
-    prefix: '≈',
-    suffix: ' h',
-    caption: 'por semana en reconciliar versiones',
-    status: 'CRÍTICO',
-    severity: 'risk',
-  },
-  {
-    tool: 'WhatsApp',
-    system: 'Trazabilidad',
-    problem:
-      'La operación crítica vive en chats. Lo que no se anotó en una hoja, se pierde. El seguimiento depende de quién recuerde qué.',
-    value: 3,
-    prefix: '1 de cada ',
-    suffix: '',
-    caption: 'compromisos se cae sin responsable',
-    status: 'CRÍTICO',
-    severity: 'risk',
-  },
-  {
-    tool: 'Reportes',
-    system: 'Latencia de decisión',
-    problem:
-      'Cada cierre toma días. Cuando dirección recibe el dato, la decisión ya pasó. El equipo opera por intuición, no por dato.',
-    value: 4,
-    prefix: '+',
-    suffix: ' días',
-    caption: 'entre el hecho real y el reporte',
-    status: 'EN RIESGO',
-    severity: 'warn',
-  },
-] as const;
 
 /* Periodic signal paths — start & end at y=20 so two copies tile seamlessly. */
 const RISK_PATH =

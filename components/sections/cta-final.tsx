@@ -3,33 +3,30 @@ import { AnimatedGenerateButton } from '@/components/ui/animated-generate-button
 import DisplayCards, { type DisplayCardProps } from '@/components/ui/display-cards';
 import { Search, Crosshair, Database } from 'lucide-react';
 import { CALENDAR_URL, WHATSAPP_URL } from '@/lib/links';
+import { DIAGNOSTIC_REVIEW } from '@/content/diagnostic-review';
+
+/* Presentation for the stacked cards — icons + stacked-layout classes,
+   one per review item (content lives in content/diagnostic-review.ts). */
+const REVIEW_ICONS = [
+  <Search key="search" className="size-4 text-cyan-soft" />,
+  <Crosshair key="crosshair" className="size-4 text-cyan-soft" />,
+  <Database key="database" className="size-4 text-cyan-soft" />,
+];
+
+const REVIEW_CLASSNAMES = [
+  "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
+  "[grid-area:stack] translate-x-10 translate-y-10 hover:-translate-y-1 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
+  '[grid-area:stack] translate-x-20 translate-y-20 hover:translate-y-10',
+];
 
 /** Stacked interactive cards — the 3 things covered in the diagnostic. */
-const REVIEW_CARDS: DisplayCardProps[] = [
-  {
-    icon: <Search className="size-4 text-cyan-soft" />,
-    title: 'Captura duplicada',
-    description: 'Dónde se duplica el trabajo',
-    date: 'Paso 01 · Diagnóstico',
-    className:
-      "[grid-area:stack] hover:-translate-y-10 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
-  },
-  {
-    icon: <Crosshair className="size-4 text-cyan-soft" />,
-    title: 'Módulo de impacto',
-    description: 'Cuál ordena más tu operación',
-    date: 'Paso 02 · Prioridad',
-    className:
-      "[grid-area:stack] translate-x-10 translate-y-10 hover:-translate-y-1 before:absolute before:w-[100%] before:outline-1 before:rounded-xl before:outline-border before:h-[100%] before:content-[''] before:bg-blend-overlay before:bg-background/50 grayscale-[100%] hover:before:opacity-0 before:transition-opacity before:duration-700 hover:grayscale-0 before:left-0 before:top-0",
-  },
-  {
-    icon: <Database className="size-4 text-cyan-soft" />,
-    title: 'Datos y roles',
-    description: 'Qué falta para arrancar',
-    date: 'Paso 03 · Alcance',
-    className: '[grid-area:stack] translate-x-20 translate-y-20 hover:translate-y-10',
-  },
-];
+const REVIEW_CARDS: DisplayCardProps[] = DIAGNOSTIC_REVIEW.map((item, i) => ({
+  icon: REVIEW_ICONS[i],
+  title: item.title,
+  description: item.description,
+  date: item.step,
+  className: REVIEW_CLASSNAMES[i],
+}));
 
 /**
  * Final CTA section.

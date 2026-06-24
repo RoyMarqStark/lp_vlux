@@ -2,17 +2,7 @@
 
 import { motion, useReducedMotion } from 'framer-motion';
 import { SectionKicker } from '@/components/ui/section-kicker';
-
-const ITEMS = [
-  'Excel',
-  'WhatsApp',
-  'Global Shop',
-  'ERP / CRM',
-  'Base de datos',
-  'Power BI',
-  'Workflows',
-  'AI / Agents',
-] as const;
+import { INTEGRATIONS } from '@/content/integrations';
 
 /**
  * Infinite-scrolling marquee of integration names.
@@ -51,7 +41,7 @@ export function IntegrationsMarquee() {
                 }
               : {})}
           >
-            {[...ITEMS, ...ITEMS].map((item, i) => (
+            {[...INTEGRATIONS, ...INTEGRATIONS].map((item, i) => (
               <div key={`${item}-${i}`} className="flex items-center gap-8 md:gap-14 lg:gap-20 shrink-0">
                 <span className="font-display text-[1.7rem] md:text-[3rem] lg:text-[4.5rem] font-bold text-pearl tracking-[var(--tracking-tightest)] leading-none">
                   {item}

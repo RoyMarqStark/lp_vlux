@@ -4,40 +4,7 @@ import { useRef } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from 'framer-motion';
 import { SectionKicker } from '@/components/ui/section-kicker';
 import { BackgroundPaths } from '@/components/ui/background-paths';
-
-interface Step {
-  num: string;
-  title: string;
-  description: string;
-  meta: string;
-}
-
-const STEPS: readonly Step[] = [
-  {
-    num: '01',
-    title: 'Diagnóstico operativo',
-    description: 'Mapeamos tus herramientas, áreas y dónde se duplica captura o se rompe el seguimiento.',
-    meta: 'Sin costo · 30–45 min',
-  },
-  {
-    num: '02',
-    title: 'Mapa del primer módulo',
-    description: 'Alcance, roles e integraciones en una sola hoja de ruta — con fecha de entrega.',
-    meta: 'Alcance fijo',
-  },
-  {
-    num: '03',
-    title: 'Implementación por etapas',
-    description: 'Liberamos por bloques validables con el equipo. Lo que entra en producción ya está adoptado.',
-    meta: 'Sprints de 2–3 sem',
-  },
-  {
-    num: '04',
-    title: 'Medición y mejora',
-    description: 'Tableros activos desde día uno. Ajustes en base a uso real, no a suposiciones.',
-    meta: 'Continuo',
-  },
-] as const;
+import { PROCESS_STEPS, type ProcessStep } from '@/content/process';
 
 /**
  * Vertical timeline with scroll-bound progress fill.
@@ -85,11 +52,11 @@ export function ProcessTimeline() {
             className="absolute left-[27px] lg:left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-cyan-core via-cyan-core to-cyan-core/30 lg:-translate-x-1/2"
           />
 
-          {STEPS.map((step, i) => (
+          {PROCESS_STEPS.map((step, i) => (
             <TimelineStep
               key={step.num}
               index={i}
-              total={STEPS.length}
+              total={PROCESS_STEPS.length}
               step={step}
               progress={scrollYProgress}
             />
@@ -103,7 +70,7 @@ export function ProcessTimeline() {
 interface TimelineStepProps {
   index: number;
   total: number;
-  step: Step;
+  step: ProcessStep;
   progress: MotionValue<number>;
 }
 
