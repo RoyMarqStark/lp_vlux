@@ -4,12 +4,12 @@ import { useEffect, useRef } from 'react';
 
 /* ============================================================
    Particle parameters (validated in Blender prototype)
-   180 pts · 3 depth layers · #22D3EE · cursor parallax
+   500 pts · 3 depth layers · #22D3EE · cursor magnetic field
    ============================================================ */
-const NEAR_COUNT = 45;
-const MID_COUNT  = 90;
-const FAR_COUNT  = 45;
-const N          = NEAR_COUNT + MID_COUNT + FAR_COUNT;   // 180
+const NEAR_COUNT = 125;
+const MID_COUNT  = 250;
+const FAR_COUNT  = 125;
+const N          = NEAR_COUNT + MID_COUNT + FAR_COUNT;   // 500
 
 /* Mulberry32 — seeded RNG for deterministic SSR/client parity */
 function seededRng(seed: number) {
@@ -22,12 +22,13 @@ function seededRng(seed: number) {
   };
 }
 
-/* Build static 3D positions for all 180 particles.
-   XY  : NDC-like screen plane  [-1.1, 1.1] × [-1.0, 1.0]
-   Z   : depth value, mapped to [0.2, 1.0]
-          1.0 = near (large, bright, moves most with cursor)
-          0.2 = far  (small, dim,   moves least)
-   phase: random per-particle for independent idle drift.         */
+/* Build static 3D positions for all particles.
+   XY  : field-space coords in [-1.05, 1.05] — perspective maps these
+         to fill the full viewport (near layer reaches edges, far pulls in).
+   Z   : depth value [0.20, 1.00]
+          1.0 = near (large, bright, reacts most to cursor)
+          0.2 = far  (small, dim,   reacts least)
+   phase: random per-particle for independent idle drift.            */
 function buildParticles() {
   const rand = seededRng(7);
 
@@ -36,29 +37,18 @@ function buildParticles() {
 
   let i = 0;
 
-  // Near layer — Z ∈ [0.70, 1.00]
-  for (let k = 0; k < NEAR_COUNT; k++, i++) {
-    pos[i * 3]     = (rand() * 2 - 1) * 1.10;
-    pos[i * 3 + 1] = (rand() * 2 - 1) * 0.95;
-    pos[i * 3 + 2] = 0.70 + rand() * 0.30;
-    phase[i]       = rand() * Math.PI * 2;
-  }
+  const fillLayer = (count: number, zMin: number, zSpan: number) => {
+    for (let k = 0; k < count; k++, i++) {
+      pos[i * 3]     = (rand() * 2 - 1) * 1.05;
+      pos[i * 3 + 1] = (rand() * 2 - 1) * 1.05;
+      pos[i * 3 + 2] = zMin + rand() * zSpan;
+      phase[i]       = rand() * Math.PI * 2;
+    }
+  };
 
-  // Mid layer — Z ∈ [0.40, 0.70]
-  for (let k = 0; k < MID_COUNT; k++, i++) {
-    pos[i * 3]     = (rand() * 2 - 1) * 1.10;
-    pos[i * 3 + 1] = (rand() * 2 - 1) * 0.95;
-    pos[i * 3 + 2] = 0.40 + rand() * 0.30;
-    phase[i]       = rand() * Math.PI * 2;
-  }
-
-  // Far layer — Z ∈ [0.20, 0.40]
-  for (let k = 0; k < FAR_COUNT; k++, i++) {
-    pos[i * 3]     = (rand() * 2 - 1) * 1.10;
-    pos[i * 3 + 1] = (rand() * 2 - 1) * 0.95;
-    pos[i * 3 + 2] = 0.20 + rand() * 0.20;
-    phase[i]       = rand() * Math.PI * 2;
-  }
+  fillLayer(NEAR_COUNT, 0.70, 0.30);  // Z ∈ [0.70, 1.00]
+  fillLayer(MID_COUNT,  0.40, 0.30);  // Z ∈ [0.40, 0.70]
+  fillLayer(FAR_COUNT,  0.20, 0.20);  // Z ∈ [0.20, 0.40]
 
   return { pos, phase };
 }
@@ -73,36 +63,51 @@ const VERT = `
   attribute float a_phase;  /* per-particle idle drift phase */
 
   uniform float u_time;
-  uniform vec2  u_cursor;   /* smoothed cursor in NDC [-1,1], (0,0) = center */
-  uniform float u_aspect;   /* canvas w/h */
-  uniform float u_ptBase;   /* base point size in px */
+  uniform vec2  u_cursor;          /* smoothed cursor in NDC [-1,1] */
+  uniform float u_aspect;          /* canvas w/h (for circular falloff) */
+  uniform float u_ptBase;          /* base point size in px */
   uniform float u_cursor_strength; /* 0 on mobile/reduced, 1 on desktop */
 
   varying float v_depth;
+  varying float v_glow;            /* 0..1 proximity to cursor */
 
   void main() {
     float z = a_pos.z;  /* [0.2, 1.0] */
 
     /* Idle drift — gentle Lissajous per particle */
     vec2 drift = vec2(
-      sin(u_time * 0.18 + a_phase)         * 0.028,
-      cos(u_time * 0.23 + a_phase * 1.618) * 0.028
+      sin(u_time * 0.18 + a_phase)         * 0.020,
+      cos(u_time * 0.23 + a_phase * 1.618) * 0.020
     );
 
-    /* Cursor parallax — near layers shift most, far least */
-    vec2 parallax = u_cursor * z * 0.18 * u_cursor_strength;
+    vec2 pos2d = a_pos.xy + drift;
 
-    vec2 pos2d = a_pos.xy + drift + parallax;
-
-    /* Simple perspective (pinhole at eye_z = 2.0 in front of z=0 plane) */
+    /* Perspective (pinhole eye at z=2.0): near layers fill the frame,
+       far layers pull toward center → real depth. */
     float eye_z = 2.0;
     float proj  = eye_z / (eye_z + 1.0 - z);
-    vec2  screen = pos2d * proj;
+    vec2  ndc   = pos2d * proj;
 
-    gl_Position  = vec4(screen.x / u_aspect, screen.y, 0.0, 1.0);
-    /* Point size: depth + perspective scale; near=bigger, far=smaller */
-    gl_PointSize = u_ptBase * (0.45 + z * 0.85) * proj;
+    /* ── Magnetic field: per-particle attraction toward the cursor ──
+       delta points from particle to cursor. Falloff is gaussian in
+       aspect-corrected screen space so the influence is a circle, not
+       an ellipse. Near layers (high z) are pulled harder. */
+    vec2  delta       = u_cursor - ndc;
+    vec2  deltaScreen = vec2(delta.x * u_aspect, delta.y);
+    float dist        = length(deltaScreen);
+    float R           = 0.60;
+    float falloff     = exp(-(dist * dist) / (R * R));
+    float pull        = falloff * 0.34 * (0.40 + z * 0.80) * u_cursor_strength;
+    ndc += delta * pull;
+
+    gl_Position  = vec4(ndc, 0.0, 1.0);
+
+    /* Size: depth + perspective; grows when close to the cursor */
+    gl_PointSize = u_ptBase * (0.45 + z * 0.85) * proj
+                 * (1.0 + falloff * 1.10 * u_cursor_strength);
+
     v_depth = z;
+    v_glow  = falloff * u_cursor_strength;
   }
 `;
 
@@ -110,36 +115,45 @@ const FRAG = `
   precision mediump float;
 
   varying float v_depth;
+  varying float v_glow;
 
   void main() {
     vec2  coord = gl_PointCoord - vec2(0.5);
     float d     = length(coord);
     if (d > 0.5) discard;
 
-    /* Soft disc with gaussian-ish falloff */
-    float disc  = 1.0 - smoothstep(0.20, 0.50, d);
+    /* Soft disc with a brighter core */
+    float disc = 1.0 - smoothstep(0.10, 0.50, d);
 
-    /* Depth-based opacity: near brighter, far dimmer.
-       Total alpha purposely low so the marquee text stays dominant. */
-    float alpha = disc * (0.12 + v_depth * 0.25);  /* [0.12, 0.37] */
+    /* Depth-based opacity — much more visible than before.
+       Near brighter, far dimmer. Marquee text (z-10) stays dominant. */
+    float baseAlpha = disc * (0.32 + v_depth * 0.42);   /* [0.32, 0.74] */
 
-    /* #22D3EE → linear (0.133, 0.827, 0.933) */
-    gl_FragColor = vec4(0.133, 0.827, 0.933, alpha);
+    /* Brighten sharply near the cursor */
+    float alpha = baseAlpha * (1.0 + v_glow * 1.6);
+
+    /* Color heats from brand cyan toward a near-white cyan at the cursor */
+    vec3 base = vec3(0.133, 0.827, 0.933);   /* #22D3EE */
+    vec3 hot  = vec3(0.78, 0.98, 1.00);
+    vec3 col  = mix(base, hot, v_glow);
+
+    gl_FragColor = vec4(col, alpha);
   }
 `;
 
 /* ============================================================
    Component
    ============================================================
- * Raw-WebGL 3D cursor parallax field.
+ * Raw-WebGL 3D cursor magnetic field.
  * Follows the NeuralNoise / ManifestoParticles pattern exactly:
  *   IntersectionObserver pause · ResizeObserver · DPR cap 1.5
  *   pointermove tracking with lerp smoothing
  *   prefers-reduced-motion: static render, no RAF
  *   Full GPU cleanup on unmount.
  *
- * Mobile (hover: none media query): cursor parallax disabled,
- * only idle drift runs.
+ * Cursor behaviour: each particle is attracted toward the cursor with a
+ * gaussian falloff (a "magnet"). Near-cursor particles gather, grow and
+ * glow brighter. Mobile (hover:none) keeps only the idle drift.
  */
 export function IntegrationField() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -149,8 +163,8 @@ export function IntegrationField() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const isTouch  = window.matchMedia('(hover: none)').matches;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const isTouch = window.matchMedia('(hover: none)').matches;
 
     const ctxOpts: WebGLContextAttributes = { alpha: true, premultipliedAlpha: false };
     const gl = (
@@ -204,7 +218,6 @@ export function IntegrationField() {
     const locPos   = gl.getAttribLocation(prog, 'a_pos');
     const locPhase = gl.getAttribLocation(prog, 'a_phase');
 
-    /* Bind attributes once — buffers are static */
     gl.bindBuffer(gl.ARRAY_BUFFER, bufPos);
     gl.enableVertexAttribArray(locPos);
     gl.vertexAttribPointer(locPos, 3, gl.FLOAT, false, 0, 0);
@@ -219,16 +232,15 @@ export function IntegrationField() {
     const uPtBase         = gl.getUniformLocation(prog, 'u_ptBase');
     const uCursorStrength = gl.getUniformLocation(prog, 'u_cursor_strength');
 
-    /* Cursor parallax off on touch/mobile */
     gl.uniform1f(uCursorStrength, isTouch ? 0.0 : 1.0);
 
     gl.enable(gl.BLEND);
-    gl.blendFunc(gl.SRC_ALPHA, gl.ONE);   /* additive blend — particles glow on overlap */
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE);   /* additive — particles glow on overlap */
     gl.clearColor(0, 0, 0, 0);
 
     /* ── Resize ──────────────────────────────────────────────── */
     const MAX_DPR = 1.5;
-    let ptBase = 5;
+    let ptBase = 6;
 
     const resize = () => {
       const parent = canvas.parentElement;
@@ -243,8 +255,7 @@ export function IntegrationField() {
       }
       gl.viewport(0, 0, w, h);
       gl.uniform1f(uAspect, w / h);
-      /* Base point size scales with canvas height */
-      ptBase = Math.max(3, Math.round(h / 80));
+      ptBase = Math.max(4, Math.round(h / 70));
       gl.uniform1f(uPtBase, ptBase);
     };
 
@@ -260,29 +271,33 @@ export function IntegrationField() {
     );
     io.observe(canvas);
 
-    /* ── Cursor tracking (desktop only) ─────────────────────── */
-    const cursor = { x: 0, y: 0, tx: 0, ty: 0 };
+    /* ── Cursor tracking (desktop only) ──────────────────────────
+       Start off-screen (2,2) so there's no initial gather at center.
+       Snap on first move to avoid a sweep, then lerp for spring-feel.
+       Release back off-screen when the pointer leaves the window.   */
+    const OFF = 2.0;
+    const cursor = { x: OFF, y: OFF, tx: OFF, ty: OFF, seen: false };
 
     const onPointerMove = (e: PointerEvent) => {
       const r = canvas.getBoundingClientRect();
-      /* Convert to NDC [-1, 1] centered */
-      cursor.tx = ((e.clientX - r.left) / r.width  * 2 - 1);
-      cursor.ty = -((e.clientY - r.top)  / r.height * 2 - 1);  /* Y flipped */
+      cursor.tx =  ((e.clientX - r.left) / r.width)  * 2 - 1;
+      cursor.ty = -(((e.clientY - r.top) / r.height) * 2 - 1);  /* Y flipped */
+      if (!cursor.seen) { cursor.x = cursor.tx; cursor.y = cursor.ty; cursor.seen = true; }
     };
+    const onPointerLeave = () => { cursor.tx = OFF; cursor.ty = OFF; };
 
     if (!isTouch) {
       window.addEventListener('pointermove', onPointerMove, { passive: true });
+      document.documentElement.addEventListener('mouseleave', onPointerLeave);
     }
 
     /* ── Render loop ─────────────────────────────────────────── */
     const render = () => {
       if (visible) {
         if (!reduced && !isTouch) {
-          /* Lerp cursor for spring-feel */
-          cursor.x += (cursor.tx - cursor.x) * 0.07;
-          cursor.y += (cursor.ty - cursor.y) * 0.07;
+          cursor.x += (cursor.tx - cursor.x) * 0.08;
+          cursor.y += (cursor.ty - cursor.y) * 0.08;
         }
-
         gl.clear(gl.COLOR_BUFFER_BIT);
         gl.uniform1f(uTime,   reduced ? 0 : performance.now() * 0.001);
         gl.uniform2f(uCursor, cursor.x, cursor.y);
@@ -292,9 +307,8 @@ export function IntegrationField() {
     };
 
     if (reduced) {
-      /* One-shot static draw for reduced-motion */
       gl.uniform1f(uTime,   0);
-      gl.uniform2f(uCursor, 0, 0);
+      gl.uniform2f(uCursor, OFF, OFF);
       gl.drawArrays(gl.POINTS, 0, N);
     } else {
       rafRef.current = requestAnimationFrame(render);
@@ -303,7 +317,10 @@ export function IntegrationField() {
     /* ── Cleanup ─────────────────────────────────────────────── */
     return () => {
       if (rafRef.current !== null) cancelAnimationFrame(rafRef.current);
-      if (!isTouch) window.removeEventListener('pointermove', onPointerMove);
+      if (!isTouch) {
+        window.removeEventListener('pointermove', onPointerMove);
+        document.documentElement.removeEventListener('mouseleave', onPointerLeave);
+      }
       ro.disconnect();
       io.disconnect();
       gl.deleteProgram(prog);
