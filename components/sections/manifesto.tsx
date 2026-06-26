@@ -3,6 +3,7 @@
 import { useRef, type ReactNode } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from 'framer-motion';
 import { SectionKicker } from '@/components/ui/section-kicker';
+import { ManifestoParticles } from '@/components/ui/manifesto-particles';
 
 /**
  * Editorial manifesto moment.
@@ -24,9 +25,10 @@ export function Manifesto() {
       ref={ref}
       className="relative py-32 lg:py-56 border-t border-white/[0.05] overflow-hidden"
     >
-      {/* Centered halo glow */}
+      {/* z-0: particle canvas + halo glow */}
       <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1100px] h-[700px] bg-cyan-core/[0.06] blur-3xl rounded-full" />
+        <ManifestoParticles scrollProgress={scrollYProgress} />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1100px] h-[700px] bg-cyan-core/[0.04] blur-3xl rounded-full" />
       </div>
 
       <div className="relative z-10 max-w-[var(--container-shell)] mx-auto px-5 lg:px-8">
