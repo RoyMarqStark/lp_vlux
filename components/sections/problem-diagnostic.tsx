@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { animate, useInView, useReducedMotion } from 'framer-motion';
 import { SectionKicker } from '@/components/ui/section-kicker';
+import { FractureField } from '@/components/ui/fracture-field';
 import { FRACTURES, type Fracture } from '@/content/problem';
 
 /* ============================================================
@@ -36,7 +37,12 @@ export function ProblemDiagnostic() {
       id="problema"
       className="relative border-t border-white/[0.05] py-20 lg:py-32 overflow-hidden"
     >
-      <div className="max-w-[var(--container-shell)] mx-auto px-5 lg:px-8">
+      {/* z-0: fractured-structure backdrop — the operation, broken */}
+      <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+        <FractureField />
+      </div>
+
+      <div className="relative z-10 max-w-[var(--container-shell)] mx-auto px-5 lg:px-8">
         {/* ── Editorial heading ─────────────────────────────── */}
         <SectionKicker num="[02]" label="El Problema · Diagnóstico operativo" />
 
@@ -53,7 +59,12 @@ export function ProblemDiagnostic() {
         {/* ── Live monitor panel ────────────────────────────── */}
         <div
           className="diag-panel relative mt-12 lg:mt-16 panel overflow-hidden reveal"
-          style={delay(220)}
+          style={{
+            ...delay(220),
+            // Translucent so the fractured-structure field shows through the monitor
+            background:
+              'linear-gradient(180deg, rgba(17,21,14,0.72) 0%, rgba(11,15,8,0.72) 100%)',
+          }}
         >
           {/* Sweeping scan band */}
           <div
