@@ -3,6 +3,7 @@
 import { motion, useReducedMotion } from 'framer-motion';
 import { SectionKicker } from '@/components/ui/section-kicker';
 import { INTEGRATIONS } from '@/content/integrations';
+import { IntegrationField } from '@/components/ui/integration-field';
 
 /**
  * Infinite-scrolling marquee of integration names.
@@ -17,7 +18,12 @@ export function IntegrationsMarquee() {
       id="integraciones"
       className="relative py-20 lg:py-28 border-t border-white/[0.05] overflow-hidden"
     >
-      <div className="max-w-[var(--container-shell)] mx-auto px-5 lg:px-8 mb-12 lg:mb-16">
+      {/* z-0: 3D particle field — responds to cursor on desktop */}
+      <div className="absolute inset-0 z-0 pointer-events-none" aria-hidden="true">
+        <IntegrationField />
+      </div>
+
+      <div className="relative z-10 max-w-[var(--container-shell)] mx-auto px-5 lg:px-8 mb-12 lg:mb-16">
         <SectionKicker num="[05]" label="Integraciones · Con lo que ya usas" />
         <h2 className="display-2 mt-6 reveal max-w-3xl" style={{ ['--delay' as never]: '80ms' }}>
           Trabajamos con lo que<br />
@@ -25,7 +31,7 @@ export function IntegrationsMarquee() {
         </h2>
       </div>
 
-      <div className="relative">
+      <div className="relative z-10">
         {/* Edge gradients */}
         <div className="absolute inset-y-0 left-0 w-24 lg:w-56 z-10 bg-gradient-to-r from-ink via-ink/90 to-transparent pointer-events-none" />
         <div className="absolute inset-y-0 right-0 w-24 lg:w-56 z-10 bg-gradient-to-l from-ink via-ink/90 to-transparent pointer-events-none" />
@@ -53,7 +59,7 @@ export function IntegrationsMarquee() {
         </div>
       </div>
 
-      <div className="max-w-[var(--container-shell)] mx-auto px-5 lg:px-8 mt-12 lg:mt-14 flex items-center gap-3 text-[0.78rem] text-ash reveal">
+      <div className="relative z-10 max-w-[var(--container-shell)] mx-auto px-5 lg:px-8 mt-12 lg:mt-14 flex items-center gap-3 text-[0.78rem] text-ash reveal">
         <span className="w-8 h-px bg-white/10" aria-hidden="true" />
         <span>¿Trabajas con otra herramienta? La integramos en el diagnóstico.</span>
       </div>
